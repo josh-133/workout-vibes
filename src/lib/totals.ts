@@ -54,3 +54,9 @@ export function isoDate(date = new Date()): string {
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 }
+
+/** Formats a YYYY-MM-DD string in local time, e.g. "Sun, Nov 15, 2026". */
+export function formatDate(iso: string, options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }): string {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, options);
+}

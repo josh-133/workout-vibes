@@ -146,3 +146,14 @@ label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; col
 .set-grid { display: grid; grid-template-columns: 2.5rem 1fr 1fr 2.5rem; gap: 6px; align-items: center; font-size: 0.8rem; color: var(--muted); }
 .set-row { display: contents; }
 .set-row > span { text-align: center; }
+
+/* Log history */
+.log-summary { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.log-summary li { display: flex; justify-content: space-between; gap: 12px; font-size: 0.9rem; }
+
+/* Charts */
+.chart { width: 100%; height: 240px; }
+.chart .recharts-cartesian-axis-tick-value { fill: var(--muted); font-size: 12px; }
+.chart .recharts-cartesian-grid line { stroke: var(--border); }
+.chart-tooltip { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 0.85rem; }
+.chart-tooltip .meta { color: var(--muted); }

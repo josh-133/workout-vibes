@@ -1,35 +1,37 @@
 import { FormEvent, useState } from 'react';
-import { Day, DAYS, LogEntry, WorkoutDay, WorkoutLog } from '../types';
+import { Day, DAYS, LogEntry, Units, WorkoutDay, WorkoutLog } from '../types';
 import { newId } from '../storage';
 import { isoDate, todayDay } from '../lib/totals';
+import { fromLbs, toLbs } from '../lib/units';
 
 interface Props {
   plan: WorkoutDay[];
   initialDay?: Day;
+  units: Units;
   onSave: (log: WorkoutLog) => void;
   onCancel: () => void;
 }
 
-/** Turns a planned day into editable log entries (one row per planned set). */
-function entriesFromPlan(day: WorkoutDay | undefined): LogEntry[] {
+/** Turns a planned day into editable log entries (one row per planned set), with weights in display units. */
+function entriesFromPlan(day: WorkoutDay | undefined, units: Units): LogEntry[] {
   if (!day || day.exercises.length === 0) return [{ exerciseName: '', sets: [{ reps: 0, weight: 0 }] }];
   return day.exercises.map((ex) => ({
     exerciseName: ex.name,
-    sets: Array.from({ length: ex.sets }, () => ({ reps: ex.reps, weight: ex.weight ?? 0 })),
+    sets: Array.from({ length: ex.sets }, () => ({ reps: ex.reps, weight: fromLbs(ex.weight ?? 0, units) })),
   }));
 }
 
-export function LogWorkoutForm({ plan, initialDay, onSave, onCancel }: Props) {
+export function LogWorkoutForm({ plan, initialDay, units, onSave, onCancel }: Props) {
   const [day, setDay] = useState<Day>(initialDay ?? todayDay());
   const [date, setDate] = useState(isoDate());
   const [notes, setNotes] = useState('');
   const [entries, setEntries] = useState<LogEntry[]>(() =>
-    entriesFromPlan(plan.find((d) => d.day === (initialDay ?? todayDay()))),
+    entriesFromPlan(plan.find((d) => d.day === (initialDay ?? todayDay())), units),
   );
 
   function changeDay(next: Day) {
     setDay(next);
-    setEntries(entriesFromPlan(plan.find((d) => d.day === next)));
+    setEntries(entriesFromPlan(plan.find((d) => d.day === next), units));
   }
 
   function setEntry(i: number, fn: (e: LogEntry) => LogEntry) {
@@ -46,7 +48,10 @@ export function LogWorkoutForm({ plan, initialDay, onSave, onCancel }: Props) {
   function submit(e: FormEvent) {
     e.preventDefault();
     const cleaned = entries
-      .map((en) => ({ ...en, exerciseName: en.exerciseName.trim(), sets: en.sets.filter((s) => s.reps > 0) }))
+      .map((en) => ({
+        exerciseName: en.exerciseName.trim(),
+        sets: en.sets.filter((s) => s.reps > 0).map((s) => ({ reps: s.reps, weight: toLbs(s.weight, units) })),
+      }))
       .filter((en) => en.exerciseName && en.sets.length > 0);
     if (cleaned.length === 0) return;
     onSave({
@@ -87,7 +92,7 @@ export function LogWorkoutForm({ plan, initialDay, onSave, onCancel }: Props) {
               onClick={() => setEntries((prev) => prev.filter((_, j) => j !== i))}>✕</button>
           </div>
           <div className="set-grid">
-            <span>Set</span><span>Reps</span><span>Weight</span><span />
+            <span>Set</span><span>Reps</span><span>Weight ({units})</span><span />
             {entry.sets.map((set, s) => (
               <div key={s} className="set-row">
                 <span>{s + 1}</span>
