@@ -1,0 +1,148 @@
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --text: #1b1e24;
+  --muted: #646b78;
+  --border: #dde1e7;
+  --accent: #2f6fde;
+  --accent-text: #ffffff;
+  --accent-soft: #e5eefc;
+  --danger: #c2362f;
+  --good: #23864a;
+  --radius: 10px;
+  --nav-h: 60px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121418;
+    --surface: #1c1f25;
+    --text: #e8eaee;
+    --muted: #99a0ad;
+    --border: #2e333c;
+    --accent: #5b8ff0;
+    --accent-text: #0d1117;
+    --accent-soft: #1f2b44;
+    --danger: #ef6b62;
+    --good: #4cc27a;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+h1 { font-size: 1.5rem; margin: 0 0 12px; }
+h2 { font-size: 1.05rem; margin: 0 0 10px; }
+h3 { font-size: 0.95rem; margin: 0 0 6px; }
+
+.muted { color: var(--muted); }
+
+/* Layout */
+.app { min-height: 100vh; }
+.content { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(var(--nav-h) + 24px); }
+.page { display: flex; flex-direction: column; gap: 14px; }
+.page-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.page-header h1 { margin: 0; }
+
+/* Navigation: bottom bar on phones, top bar on wider screens */
+.nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: space-around;
+  height: var(--nav-h);
+  background: var(--surface); border-top: 1px solid var(--border);
+}
+.nav .brand { display: none; }
+.nav-link {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; font-size: 0.72rem; color: var(--muted); text-decoration: none;
+}
+.nav-link span:first-child { font-size: 1.15rem; }
+.nav-link.active { color: var(--accent); font-weight: 600; }
+
+@media (min-width: 720px) {
+  .nav {
+    position: sticky; top: 0; bottom: auto; justify-content: flex-start; gap: 4px;
+    padding: 0 24px; border-top: 0; border-bottom: 1px solid var(--border);
+  }
+  .nav .brand { display: flex; align-items: center; font-weight: 700; margin-right: 20px; }
+  .nav-link { flex: 0; flex-direction: row; gap: 6px; padding: 0 12px; font-size: 0.9rem; white-space: nowrap; }
+  .nav-link span:first-child { font-size: 1rem; }
+  .content { padding-bottom: 32px; }
+}
+
+/* Cards */
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px;
+}
+.notice { margin: 0; padding: 10px 12px; border-radius: var(--radius); background: var(--accent-soft); }
+.empty { text-align: center; color: var(--muted); padding: 24px 14px; }
+
+/* Controls */
+button, .button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; cursor: pointer;
+}
+button:hover, .button:hover { border-color: var(--muted); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+button.danger { color: var(--danger); }
+button.link { border: 0; background: none; padding: 4px 0; color: var(--accent); }
+button.icon { padding: 4px 10px; color: var(--muted); }
+
+input, select, textarea {
+  width: 100%; font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; color: var(--muted); }
+
+.form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.form .wide { grid-column: 1 / -1; }
+@media (min-width: 560px) { .form { grid-template-columns: repeat(4, 1fr); } }
+
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.row { display: flex; gap: 8px; align-items: flex-end; }
+.row > * { flex: 1; }
+.row > button.icon { flex: 0; }
+
+.segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.segmented button { border: 0; border-radius: 0; padding: 6px 18px; }
+.segmented button.active { background: var(--accent); color: var(--accent-text); }
+
+/* Day tabs */
+.day-tabs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.day-tab { flex-direction: column; gap: 0; padding: 6px 0; font-size: 0.85rem; }
+.day-tab small { font-size: 0.68rem; color: var(--muted); }
+.day-tab.today span { text-decoration: underline; text-underline-offset: 3px; }
+.day-tab.active { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.day-tab.active small { color: inherit; opacity: 0.85; }
+
+/* Lists */
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.list-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.list-item .meta { color: var(--muted); font-size: 0.85rem; }
+
+/* Macros */
+.macro-totals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.macro { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.macro strong { font-size: 1.15rem; }
+.macro span { font-size: 0.78rem; color: var(--muted); }
+.macro .bar { width: 100%; height: 4px; margin-top: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.macro .bar i { display: block; height: 100%; background: var(--accent); }
+.macro .bar i.over { background: var(--danger); }
+
+/* Workout log form */
+.log-form { display: flex; flex-direction: column; gap: 12px; }
+.log-entry { border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.set-grid { display: grid; grid-template-columns: 2.5rem 1fr 1fr 2.5rem; gap: 6px; align-items: center; font-size: 0.8rem; color: var(--muted); }
+.set-row { display: contents; }
+.set-row > span { text-align: center; }
