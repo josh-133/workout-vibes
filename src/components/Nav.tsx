@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 
 const LINKS: [string, string, string][] = [
+  ['/', 'Today', '☀'],
   ['/workouts', 'Workouts', '🏋'],
   ['/meals', 'Meals', '🍽'],
   ['/log', 'Log', '📝'],

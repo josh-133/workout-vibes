@@ -157,3 +157,10 @@ label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; col
 .chart .recharts-cartesian-grid line { stroke: var(--border); }
 .chart-tooltip { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 0.85rem; }
 .chart-tooltip .meta { color: var(--muted); }
+
+/* Badges & links */
+.badge { font-size: 0.85rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); }
+.badge.good { color: var(--good); }
+a { color: var(--accent); }
+a.button { text-decoration: none; }
+a.button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
