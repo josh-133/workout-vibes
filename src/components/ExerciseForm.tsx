@@ -1,30 +1,35 @@
 import { FormEvent, useState } from 'react';
-import { Exercise } from '../types';
+import { Exercise, Units } from '../types';
 import { newId } from '../storage';
 import { optionalNumber } from '../lib/forms';
+import { fromLbs, toLbs } from '../lib/units';
 
 interface Props {
   initial?: Exercise;
+  units: Units;
   onSave: (exercise: Exercise) => void;
   onCancel?: () => void;
 }
 
-export function ExerciseForm({ initial, onSave, onCancel }: Props) {
+export function ExerciseForm({ initial, units, onSave, onCancel }: Props) {
   const [name, setName] = useState(initial?.name ?? '');
   const [sets, setSets] = useState(String(initial?.sets ?? 3));
   const [reps, setReps] = useState(String(initial?.reps ?? 10));
-  const [weight, setWeight] = useState(initial?.weight?.toString() ?? '');
+  const initialWeight = initial?.weight !== undefined ? String(fromLbs(initial.weight, units)) : '';
+  const [weight, setWeight] = useState(initialWeight);
   const [notes, setNotes] = useState(initial?.notes ?? '');
 
   function submit(e: FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
+    // Keep the stored value when untouched so kg rounding doesn't drift it.
+    const w = optionalNumber(weight);
     onSave({
       id: initial?.id ?? newId(),
       name: name.trim(),
       sets: Math.max(1, Number(sets) || 1),
       reps: Math.max(1, Number(reps) || 1),
-      weight: optionalNumber(weight),
+      weight: weight === initialWeight ? initial?.weight : w === undefined ? undefined : toLbs(w, units),
       notes: notes.trim() || undefined,
     });
     if (!initial) {
@@ -49,7 +54,7 @@ export function ExerciseForm({ initial, onSave, onCancel }: Props) {
         <input type="number" min="1" inputMode="numeric" value={reps} onChange={(e) => setReps(e.target.value)} />
       </label>
       <label>
-        Weight (lb)
+        Weight ({units})
         <input type="number" min="0" step="any" inputMode="decimal" value={weight} onChange={(e) => setWeight(e.target.value)} />
       </label>
       <label className="wide">
